@@ -83,6 +83,13 @@ class APIAccessFormTestCase(ModoTestCase):
   def test_form_access(self):
   
   def test_form(self):
+    """ """
+    url = reverse("core:user_api_access")
+    self.ajax_get(url)
+    self.client.login()
+    self.client.login(username="user@test.com", password="toto")
+    response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
+    self.assertEqual(response.status_code, 278)
   
 class APICommunicationTestCase(ModoTestCase):
   """ """
