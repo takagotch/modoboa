@@ -71,18 +71,24 @@ class ProfileTestCase(ModoTestCase):
   @classmethod
   def setUpTestData(cls):
   
+  
   def test_update_profile(self):
   
+  
   def test_update_password(self):
+  
   
 class APIAccessFormTestCase(ModoTestCase):
   """ """
   @classmethod
   def setUpTestData(cls):
+    """ """
+    super(APIAccessFormTestCase, cls).setUpTestData()
+    cls.account = factories.UserFacory(
+      username="user@test.com", groups=("SimpleUsers",)
+    )
   
   def test_form_access(self):
-  
-  def test_form(self):
     """ """
     url = reverse("core:user_api_access")
     self.ajax_get(url)
@@ -90,6 +96,16 @@ class APIAccessFormTestCase(ModoTestCase):
     self.client.login(username="user@test.com", password="toto")
     response = self.client.get(url, HTTP_X_REQUESTED_WITH="XMLHttpRequest")
     self.assertEqual(response.status_code, 278)
+  
+  def test_form(self):
+    """ """
+    url = reverse("core:user_api_access")
+    self.ajax_post(url, {"enable_api_access": True})
+    user = models.User.objects.get(username="admin")
+    self.assertTrue(hasattr(user, "auth_token"))
+    self.ajax_post(url, {"enable_api_access": False})
+    user = models.User.objects.get(username="admin")
+    self.assertFalse(hasattr(user, "auth_token"))
   
 class APICommunicationTestCase(ModoTestCase):
   """ """
